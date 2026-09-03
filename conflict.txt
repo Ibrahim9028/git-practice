@@ -1,1 +1,1 @@
-Application version: 2.5
+Application version: 3.0
