@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                echo 'Code checked out from GitHub'
-            }
-        }
-
         stage('Test') {
             steps {
                 sh '''
@@ -28,9 +22,24 @@ pipeline {
             }
         }
 
+        stage('Deploy') {
+            steps {
+                sh '''
+                    docker rm -f devops-first-app 2>/dev/null || true
+                    docker run -d --name devops-first-app -p 8083:80 devops-first-app:1.0
+                '''
+            }
+        }
+
+        stage('Application Test') {
+            steps {
+                sh 'curl -f http://localhost:8083'
+            }
+        }
+
         stage('Success') {
             steps {
-                echo 'CI/CD pipeline completed successfully'
+                echo 'CI/CD deployment completed successfully'
             }
         }
     }
